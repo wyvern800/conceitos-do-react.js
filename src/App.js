@@ -20,21 +20,22 @@ function App() {
 
     const repository = response.data; // dados provenientes da response
     setRepositories([...repositories, repository]);
-    console.log(response.data);
+    console.log(repositories);
   }
 
   async function handleRemoveRepository(id) {
-    const response = await api.delete("repositories/" + id, {});
-
-    const repository = response.data;
-    setRepositories([...repositories, repository]);
+    const response = await api.delete(`repositories/${id}`);
+    if (response) {
+      const filter = repositories.filter((repository) => repository.id !== id);
+      setRepositories([...filter], [response.data]);
+    }
   }
 
   return (
     <div>
       <ul data-testid="repository-list">
         {repositories.map((repository) => (
-          <li key={repository.id}>
+          <li key={String(repository.id)}>
             {repository.title}
             <button onClick={() => handleRemoveRepository(repository.id)}>
               Remover
